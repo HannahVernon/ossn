@@ -3,7 +3,7 @@
  * Open Source Social Network
  *
  * @package   Open Source Social Network
- * @author    Open Social Website Core Team <info@openteknik.com>
+ * @author    Open Source Social Network Core Team <info@openteknik.com>
  * @copyright (C) OpenTeknik LLC
  * @license   Open Source Social Network License (OSSN LICENSE)  http://www.opensource-socialnetwork.org/licence
  * @link      https://www.opensource-socialnetwork.org/
@@ -29,6 +29,9 @@ function ossn_profile() {
 		ossn_extend_view('js/ossn.site.public', 'js/profile/birthdate');
 		ossn_extend_view('js/ossn.admin', 'js/profile/birthdate');
 		
+		if(!ossn_isLoggedin()){
+			ossn_extend_view('forms/signup',  'js/profile/usernamecheck');
+		}
 		//actions
 		if(ossn_isLoggedin()) {
 				ossn_register_action('profile/photo/upload', __OSSN_PROFILE__ . 'actions/photo/upload.php');
@@ -433,6 +436,7 @@ function ossn_notification_like_profile_photo($hook, $type, $return, $notificati
 				'viewed'    => $notification->viewed,
 				'url'       => $url,
 				'icon_type' => $iconType,
+				'instance'  => $notification,
 				'fullname'  => $user->fullname,
 		));		   
 }
