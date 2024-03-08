@@ -106,7 +106,7 @@ class OssnInstallation {
 		 *
 		 */
 		public static function isApache() {
-				if(preg_match('/apache/i', $_SERVER["SERVER_SOFTWARE"]) || preg_match('/LiteSpeed/i', $_SERVER["SERVER_SOFTWARE"])) {
+				if(preg_match('/apache/i', $_SERVER["SERVER_SOFTWARE"]) || preg_match('/LiteSpeed/i', $_SERVER["SERVER_SOFTWARE"]) || preg_match('/IIS/i', $_SERVER["SERVER_SOFTWARE"])) {
 						return true;
 				}
 				return false;
