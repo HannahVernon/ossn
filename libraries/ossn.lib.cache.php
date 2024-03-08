@@ -2,7 +2,7 @@
 /**
  * Open Source Social Network
  *
- * @package   (openteknik.com).ossn
+ * @package   Open Source Social Network (OSSN)
  * @author    OSSN Core Team <info@openteknik.com>
  * @copyright (C) OpenTeknik LLC
  * @license   Open Source Social Network License (OSSN LICENSE)  http://www.opensource-socialnetwork.org/licence
@@ -119,6 +119,15 @@ function ossn_trigger_language_cache($cache) {
 								}						
 					}
 				}
+				//load theme locale files
+				//[B] Theme language strings not cached #2299
+				$theme_path = ossn_default_theme();
+				$theme      = ossn_site_settings('theme');
+				if($theme){
+						if(is_file("{$theme_path}/locale/ossn.{$lang}.php")) {
+									include_once("{$theme_path}/locale/ossn.{$lang}.php");
+						}						
+				}				
 				if(isset($Ossn->localestr[$lang])) {
 						$json = ossn_load_json_locales($lang);
 						//private locale cache , Cache the locale files #1321
@@ -268,4 +277,13 @@ function ossn_add_cache_to_url($url){
 	
 	$params['query'] = $query;
 	return  ossn_build_token_url($params);	
+}
+/**
+ * Ossn Dynamic Cache get settings
+ *
+ * @return aray
+ */
+function ossn_dynamic_cache_settings(){
+	  global $Ossn;
+	  return $Ossn->dynamic_cache_settings;
 }

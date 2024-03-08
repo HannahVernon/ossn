@@ -2,7 +2,7 @@
 /**
  * Open Source Social Network
  *
- * @package   (openteknik.com).ossn
+ * @package   Open Source Social Network (OSSN)
  * @author    OSSN Core Team <info@openteknik.com>
  * @copyright (C) OpenTeknik LLC
  * @license   Open Source Social Network License (OSSN LICENSE)  http://www.opensource-socialnetwork.org/licence
@@ -85,14 +85,17 @@ class OssnFile extends OssnEntities {
 		 */
 		public function setFile($name): void {
 				$this->showFileUploadError();
-				if(isset($_FILES[$name]['type']) && ($_FILES[$name]['error'] == UPLOAD_ERR_OK && $_FILES[$name]['size'] !== 0)) {
-						$file       = $_FILES[$name];
-						$this->file = $file;
-				} else {
-						if(!$_FILES[$name]['error'] && $_FILES[$name]['size'] == 0) {
-								$this->error = UPLOAD_ERR_EXTENSION;
+				//[E] Unknown offset on OssnFile #2240
+				if(isset($_FILES[$name])) {
+						if(isset($_FILES[$name]['type']) && ($_FILES[$name]['error'] == UPLOAD_ERR_OK && $_FILES[$name]['size'] !== 0)) {
+								$file       = $_FILES[$name];
+								$this->file = $file;
 						} else {
-								$this->error = $_FILES[$name]['error'];
+								if(!$_FILES[$name]['error'] && $_FILES[$name]['size'] == 0) {
+										$this->error = UPLOAD_ERR_EXTENSION;
+								} else {
+										$this->error = $_FILES[$name]['error'];
+								}
 						}
 				}
 		}
@@ -200,6 +203,11 @@ class OssnFile extends OssnEntities {
 		public function showFileUploadError(): void {
 				if(empty($this->redirect)) {
 						$this->redirect = REF;
+				}
+				//post size error
+				//post_size < upload max size
+				if(!empty($_SERVER['CONTENT_LENGTH']) && empty($_POST)){
+						$this->error = UPLOAD_ERR_FORM_SIZE;
 				}
 				if(isset($this->file) && ($this->file['error'] !== UPLOAD_ERR_OK || $this->file['size'] == 0)) {
 						ossn_trigger_message($this->getFileUploadError($this->file['error']), 'error');
@@ -573,6 +581,7 @@ class OssnFile extends OssnEntities {
 						),
 						'zip'  => array(
 								'application/zip',
+								'application/x-zip-compressed',
 						),
 						'webp' => array(
 								'image/webp',
@@ -729,13 +738,20 @@ class OssnFile extends OssnEntities {
 						$filesize  = filesize($file);
 						$type      = $this->getFileExtension($file);
 						$MimeTypes = $this->mimeTypes();
-
+						
+						//[B] OssnFile:output doesn't recognize setMimeTypes by component #2331
+						//restricted by component
+						if(isset($this->fileMimeTypes) && is_array($this->fileMimeTypes)){
+							$MimeTypes = $this->fileMimeTypes;
+						}
 						//not getting actual mimetype getting by extension type to avoid any vulnerability.
 						if(isset($MimeTypes[$type][0])) {
 								$MimeType = $MimeTypes[$type][0];
 								if(isset($Mime) && !empty($Mime)) {
 										$MimeType = $Mime;
 								}
+								//[E] Session locking issue #2343
+								session_write_close();
 								ob_flush();
 								header("Content-type: {$MimeType}");
 								header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', strtotime('+6 months')), true);

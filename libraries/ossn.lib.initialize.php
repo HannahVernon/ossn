@@ -2,7 +2,7 @@
 /**
  * Open Source Social Network
  *
- * @package   (openteknik.com).ossn
+ * @package   Open Source Social Network (OSSN)
  * @author    OSSN Core Team <info@openteknik.com>
  * @copyright (C) OpenTeknik LLC
  * @license   Open Source Social Network License (OSSN LICENSE)  http://www.opensource-socialnetwork.org/licence
@@ -56,12 +56,10 @@ function ossn_initialize() {
 		
 		ossn_register_menu_item('footer', array(
 				'name' => 'a_copyrights',
-				'text' => ossn_print('copyright') . ' ' . ossn_site_settings('site_name'),
+				'text' => ossn_print('copyright') . ' ' . ossn_site_settings('copyrights'),
 				'href' => ossn_site_url()
 		));
-		
 		ossn_register_menu_item('footer', ossn_pow_lnk_args());
-		
 		ossn_extend_view('ossn/endpoint', 'author/view');
 }
 

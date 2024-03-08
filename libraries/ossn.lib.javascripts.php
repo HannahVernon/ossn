@@ -2,7 +2,7 @@
 /**
  * Open Source Social Network
  *
- * @package   (openteknik.com).ossn
+ * @package   Open Source Social Network (OSSN)
  * @author    OSSN Core Team <info@openteknik.com>
  * @copyright (C) OpenTeknik LLC
  * @license   Open Source Social Network License (OSSN LICENSE)  http://www.opensource-socialnetwork.org/licence
@@ -40,15 +40,15 @@ function ossn_javascript() {
 		}
 
 		//some internal and external js
-		ossn_new_external_js('chart.js', 'vendors/Chartjs/Chart.min.js');
-		ossn_new_external_js('chart.legend.js', 'vendors/Chartjs/chart.legend.js');
-		ossn_new_external_js('jquery-3.6.0.min.js', 'vendors/jquery/jquery-3.6.0.min.js');
+		// [E] Update chart js library #2220
+		ossn_new_external_js('chart.js', 'vendors/Chartjs/chart.js');
+		ossn_new_external_js('jquery-3.7.1.min.js', 'vendors/jquery/jquery-3.7.1.min.js');
 
 		ossn_new_external_js('tinymce.min', 'vendors/tinymce/tinymce.min.js');
-		ossn_new_external_js('jquery-ui.min.js', '//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', false);
+		ossn_new_external_js('jquery-ui.min.js', '//ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js', false);
 
-		ossn_load_external_js('jquery-3.6.0.min.js');
-		ossn_load_external_js('jquery-3.6.0.min.js', 'admin');
+		ossn_load_external_js('jquery-3.7.1.min.js');
+		ossn_load_external_js('jquery-3.7.1.min.js', 'admin');
 
 		ossn_load_external_js('jquery-ui.min.js');
 		ossn_load_external_js('jquery-ui.min.js', 'admin');
@@ -59,6 +59,9 @@ function ossn_javascript() {
 				ossn_new_external_js('jquery-arhandler-1.1-min.js', 'vendors/jquery/jquery-arhandler-1.1-min.js');
 				ossn_load_external_js('jquery-arhandler-1.1-min.js');
 		}
+		//[E] Add fancybox into core as external lib #2234
+		ossn_new_external_js('jquery.fancybox.min.js', '//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js', false);
+		ossn_new_external_css('jquery.fancybox.min.css', '//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css', false);	
 }
 
 /**
@@ -364,7 +367,7 @@ function ossn_languages_js() {
  * @return void;
  */
 function ossn_redirect_absolute_url() {
-		if(php_sapi_name() !== 'cli') {
+		if(!ossn_is_from_cli()) {
 				$baseurl  = ossn_site_url();
 				$parts    = parse_url($baseurl);
 				$iswww    = preg_match('/www./i', $parts['host']);
